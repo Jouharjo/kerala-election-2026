@@ -180,8 +180,8 @@
                     <button class="wm-tab" onclick="changeChannel(3)" id="ch-3">MEDIAONE</button>
                     <button class="wm-tab" onclick="changeChannel(4)" id="ch-4">REPORTER</button>
                 </div>
-                <div class="panel-content">
-                    <iframe id="newsFrame" src="https://www.youtube.com/embed/live_stream?channel=UCrdSJJHb1kuQWqYXXrhkCAA&autoplay=0&mute=1" allowfullscreen></iframe>
+                 <div class="panel-content">
+                    <iframe id="newsFrame" src="https://www.youtube.com/embed/1wECsnGZcfc?autoplay=1&mute=1" allowfullscreen></iframe>
                 </div>
             </div>
         </div>
@@ -285,21 +285,25 @@
             document.querySelectorAll('iframe').forEach(frame => frame.style.pointerEvents = 'auto');
         });
 
+                // News Channel Logic - Now using direct Video IDs
         const channels = [
-            { id: 'UCrdSJJHb1kuQWqYXXrhkCAA', btn: 'ch-0' }, 
-            { id: 'UC17G-QBi-SLjHQ9dNIBZZmw', btn: 'ch-1' }, 
-            { id: 'UCd3-59oqFvW4hDT-0bRj6YA', btn: 'ch-2' }, 
-            { id: 'UCP-8BawpvqybG7O9kJcMJaw', btn: 'ch-3' }, 
-            { id: 'UCb2H0n3G7U_tT-k96qF4bWA', btn: 'ch-4' }  
+            { id: '1wECsnGZcfc', btn: 'ch-0' }, // Your direct link (Asianet)
+            { id: 'VIDEO_ID_2', btn: 'ch-1' }, // Replace with Manorama's live video ID tomorrow
+            { id: 'VIDEO_ID_3', btn: 'ch-2' }, // Replace with Mathrubhumi's live video ID
+            { id: 'VIDEO_ID_4', btn: 'ch-3' }, // Replace with MediaOne's live video ID
+            { id: 'VIDEO_ID_5', btn: 'ch-4' }  // Replace with Reporter's live video ID
         ];
 
         function changeChannel(index) {
             const frame = document.getElementById('newsFrame');
-            frame.src = `https://www.youtube.com/embed/live_stream?channel=${channels[index].id}&autoplay=1`;
+            // Updated URL structure for direct Video IDs
+            frame.src = `https://www.youtube.com/embed/${channels[index].id}?autoplay=1&mute=1`;
             
+            // Update Tab UI
             document.querySelectorAll('#ch-0, #ch-1, #ch-2, #ch-3, #ch-4').forEach(btn => btn.classList.remove('active-red'));
             document.getElementById(channels[index].btn).classList.add('active-red');
         }
+
 
         function toggleInsight(source) {
             const iframe1 = document.getElementById('insight1');
