@@ -21,7 +21,8 @@
         .wm-header {
             border-bottom: 1px solid #27272a;
             background: #121212;
-            padding: 12px 16px;
+            height: 50px;
+            padding: 0 16px;
             display: flex;
             align-items: center;
             gap: 16px;
@@ -35,6 +36,20 @@
             font-size: 16px;
             letter-spacing: 2px;
             color: #fff;
+        }
+
+        /* The new Sticky Video Panel */
+        .sticky-video-panel {
+            position: sticky;
+            top: 50px; /* Glues it exactly underneath the 50px header */
+            z-index: 90;
+            background: #121212;
+            border-bottom: 2px solid #ef4444; /* Red border to separate from scrolled content */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            height: 38vh; /* Takes up about 38% of the screen height */
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
         }
 
         .grid-stack { padding: 8px; min-height: calc(100vh - 60px); }
@@ -71,24 +86,6 @@
         }
         .grip-handle:hover { color: #a1a1aa; }
         .grip-handle:active { cursor: grabbing; color: #fff; }
-
-        /* Media Controls Styling */
-        .ctrl-btn {
-            background: transparent;
-            border: 1px solid #3f3f46;
-            color: #a1a1aa;
-            border-radius: 4px;
-            padding: 2px 8px;
-            font-size: 11px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.2s;
-        }
-        .ctrl-btn:hover { background: #27272a; color: #fff; }
-        .ctrl-btn.active-pin { background: #ef4444; color: #fff; border-color: #ef4444; font-weight: bold; }
 
         .live-dot {
             width: 8px; height: 8px;
@@ -128,18 +125,8 @@
             white-space: nowrap;
         }
         .wm-tab:hover { border-color: #71717a; color: #fff; }
-        
-        .wm-tab.active-red {
-            background: #ef4444;
-            border-color: #ef4444;
-            color: white;
-            font-weight: bold;
-        }
-        
-        .wm-tab.active-gray {
-            background: #3f3f46;
-            color: white;
-        }
+        .wm-tab.active-red { background: #ef4444; border-color: #ef4444; color: white; font-weight: bold; }
+        .wm-tab.active-gray { background: #3f3f46; color: white; }
 
         .panel-content {
             flex: 1;
@@ -147,32 +134,6 @@
             background: #000;
         }
         
-        /* Video Container and Floating PIP Mode */
-        .video-wrapper {
-            width: 100%;
-            height: 100%;
-            transition: all 0.3s ease-in-out;
-            background: #000;
-        }
-        
-        .video-wrapper.pinned {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 320px;
-            height: 180px;
-            z-index: 9999;
-            border: 2px solid #ef4444;
-            border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.9);
-            overflow: hidden;
-        }
-
-        /* Adjust width for very small phones when pinned */
-        @media (max-width: 400px) {
-            .video-wrapper.pinned { width: 260px; height: 146px; bottom: 10px; right: 10px; }
-        }
-
         iframe { width: 100%; height: 100%; border: none; display: block; }
 
         .ai-box {
@@ -204,41 +165,25 @@
         <div class="wm-title">Election Monitor</div>
     </header>
 
-    <div class="grid-stack">
-        
-        <div class="grid-stack-item" gs-w="12" gs-h="5" gs-x="0" gs-y="0">
-            <div class="grid-stack-item-content">
-                <div class="panel-header">
-                    <div class="flex items-center gap-4">
-                        <div>LIVE NEWS <span style="color: #ef4444; font-size: 10px; margin-left: 4px;">● 93</span></div>
-                        
-                        <div class="flex gap-2">
-                            <button onclick="togglePlay()" id="playToggle" class="ctrl-btn">⏸ Pause</button>
-                            <button onclick="toggleMute()" id="muteToggle" class="ctrl-btn">🔊 Mute</button>
-                            <button onclick="togglePin()" id="pinToggle" class="ctrl-btn">📌 PIN</button>
-                        </div>
-                    </div>
-                    
-                    <div class="grip-handle">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
-                    </div>
-                </div>
-                <div class="wm-tabs-container">
-                    <button class="wm-tab active-red" onclick="changeChannel(0)" id="ch-0">ASIANET</button>
-                    <button class="wm-tab" onclick="changeChannel(1)" id="ch-1">MANORAMA</button>
-                    <button class="wm-tab" onclick="changeChannel(2)" id="ch-2">MATHRUBHUMI</button>
-                    <button class="wm-tab" onclick="changeChannel(3)" id="ch-3">MEDIAONE</button>
-                    <button class="wm-tab" onclick="changeChannel(4)" id="ch-4">REPORTER</button>
-                </div>
-                <div class="panel-content">
-                    <div id="videoContainer" class="video-wrapper">
-                        <div id="newsFrame"></div>
-                    </div>
-                </div>
-            </div>
+    <div class="sticky-video-panel">
+        <div class="panel-header" style="cursor: default;">
+            <div>LIVE NEWS <span style="color: #ef4444; font-size: 10px; margin-left: 8px;">● 93</span></div>
         </div>
+        <div class="wm-tabs-container">
+            <button class="wm-tab active-red" onclick="changeChannel(0)" id="ch-0">ASIANET</button>
+            <button class="wm-tab" onclick="changeChannel(1)" id="ch-1">MANORAMA</button>
+            <button class="wm-tab" onclick="changeChannel(2)" id="ch-2">MATHRUBHUMI</button>
+            <button class="wm-tab" onclick="changeChannel(3)" id="ch-3">MEDIAONE</button>
+            <button class="wm-tab" onclick="changeChannel(4)" id="ch-4">REPORTER</button>
+        </div>
+        <div class="panel-content">
+            <iframe id="newsFrame" src="https://www.youtube.com/embed/1wECsnGZcfc?autoplay=1&mute=1" allowfullscreen></iframe>
+        </div>
+    </div>
 
-        <div class="grid-stack-item" gs-w="12" gs-h="8" gs-x="0" gs-y="5">
+    <div class="grid-stack">
+
+        <div class="grid-stack-item" gs-w="12" gs-h="8" gs-x="0" gs-y="0">
             <div class="grid-stack-item-content">
                 <div class="panel-header">
                     <div>PREVIOUS INSIGHT</div>
@@ -257,7 +202,7 @@
             </div>
         </div>
 
-        <div class="grid-stack-item" gs-w="12" gs-h="6" gs-x="0" gs-y="13">
+        <div class="grid-stack-item" gs-w="12" gs-h="6" gs-x="0" gs-y="8">
             <div class="grid-stack-item-content">
                 <div class="panel-header">
                     <div>AI INSIGHTS <span style="border: 1px solid #22c55e; color: #22c55e; padding: 2px 6px; border-radius: 12px; font-size: 9px; margin-left: 8px;">LIVE</span></div>
@@ -296,7 +241,7 @@
             </div>
         </div>
 
-        <div class="grid-stack-item" gs-w="12" gs-h="4" gs-x="0" gs-y="19">
+        <div class="grid-stack-item" gs-w="12" gs-h="4" gs-x="0" gs-y="14">
             <div class="grid-stack-item-content">
                 <div class="panel-header">
                     <div>ECI OFFICIAL PORTAL</div>
@@ -320,21 +265,18 @@
 
     </div>
 
-    <script src="https://www.youtube.com/iframe_api"></script>
     <script src="https://cdn.jsdelivr.net/npm/gridstack@10.1.1/dist/gridstack-all.js"></script>
     
     <script>
-        // Init Grid
         var grid = GridStack.init({
             handle: '.grip-handle',
             margin: 8,
             cellHeight: 70
         });
 
-        grid.on('dragstart', function(event, el) { document.querySelectorAll('iframe').forEach(frame => frame.style.pointerEvents = 'none'); });
-        grid.on('dragstop', function(event, el) { document.querySelectorAll('iframe').forEach(frame => frame.style.pointerEvents = 'auto'); });
+        grid.on('dragstart', function(event, el) { document.querySelectorAll('.grid-stack-item iframe').forEach(frame => frame.style.pointerEvents = 'none'); });
+        grid.on('dragstop', function(event, el) { document.querySelectorAll('.grid-stack-item iframe').forEach(frame => frame.style.pointerEvents = 'auto'); });
 
-        // News Channel Logic
         const channels = [
             { id: '1wECsnGZcfc', btn: 'ch-0' }, // Asianet
             { id: 'VIDEO_ID_2', btn: 'ch-1' }, 
@@ -343,83 +285,11 @@
             { id: 'VIDEO_ID_5', btn: 'ch-4' }  
         ];
 
-        // 2. YouTube API Setup
-        var player;
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('newsFrame', {
-                videoId: channels[0].id, // Loads the first video automatically
-                playerVars: { 
-                    'autoplay': 1, 
-                    'mute': 0, // Starts unmuted by default
-                    'controls': 1 
-                },
-                events: {
-                    'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange
-                }
-            });
-        }
-
-        function onPlayerReady(event) {
-            event.target.playVideo();
-        }
-
-        function onPlayerStateChange(event) {
-            const playBtn = document.getElementById('playToggle');
-            if (event.data == YT.PlayerState.PLAYING) {
-                playBtn.innerHTML = '⏸ Pause';
-            } else {
-                playBtn.innerHTML = '▶ Play';
-            }
-        }
-
-        // 3. Media Controls Logic
-        function togglePlay() {
-            if (player && player.getPlayerState) {
-                if (player.getPlayerState() == YT.PlayerState.PLAYING) {
-                    player.pauseVideo();
-                } else {
-                    player.playVideo();
-                }
-            }
-        }
-
-        function toggleMute() {
-            if (player && player.isMuted) {
-                const muteBtn = document.getElementById('muteToggle');
-                if (player.isMuted()) {
-                    player.unMute();
-                    muteBtn.innerHTML = '🔊 Mute';
-                    muteBtn.classList.remove('active-pin');
-                } else {
-                    player.mute();
-                    muteBtn.innerHTML = '🔇 Unmute';
-                    muteBtn.classList.add('active-pin');
-                }
-            }
-        }
-
-        // 4. PIP (Pin) Logic
-        function togglePin() {
-            const wrapper = document.getElementById('videoContainer');
-            const pinBtn = document.getElementById('pinToggle');
-            
-            wrapper.classList.toggle('pinned');
-            
-            if (wrapper.classList.contains('pinned')) {
-                pinBtn.classList.add('active-pin');
-                pinBtn.innerHTML = '📍 UNPIN';
-            } else {
-                pinBtn.classList.remove('active-pin');
-                pinBtn.innerHTML = '📌 PIN';
-            }
-        }
-
         function changeChannel(index) {
-            if (player && player.loadVideoById) {
-                player.loadVideoById(channels[index].id);
-            }
-            document.querySelectorAll('.wm-tab').forEach(btn => btn.classList.remove('active-red'));
+            const frame = document.getElementById('newsFrame');
+            frame.src = `https://www.youtube.com/embed/${channels[index].id}?autoplay=1&mute=1`;
+            
+            document.querySelectorAll('#ch-0, #ch-1, #ch-2, #ch-3, #ch-4').forEach(btn => btn.classList.remove('active-red'));
             document.getElementById(channels[index].btn).classList.add('active-red');
         }
 
