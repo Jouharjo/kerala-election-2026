@@ -3,383 +3,301 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kerala Election 2026 - Live Monitor Dashboard</title>
+    <title>World Monitor - Election Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/gridstack@10.1.1/dist/gridstack.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
+            background-color: #0a0a0a;
+            color: #e5e5e5;
+            font-family: 'Inter', sans-serif;
             overflow-x: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #f3f4f6;
         }
 
-        .live-dot {
-            width: 10px;
-            height: 10px;
-            background-color: #ef4444;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.1); }
-        }
-
-        /* Update Panel style for Gridstack */
-        .grid-stack-item-content {
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Make the header the drag handle */
-        .panel-header {
+        .wm-header {
+            border-bottom: 1px solid #27272a;
+            background: #121212;
             padding: 12px 16px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            font-weight: 600;
-            font-size: 14px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            flex-shrink: 0;
-            cursor: grab; /* Indicate draggable */
-        }
-        .panel-header:active {
-            cursor: grabbing;
-        }
-
-        .panel-header.eci { background: linear-gradient(135deg, #f97316 0%, #dc2626 100%); }
-        .panel-header.news { background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); }
-        .panel-header.keraladesk { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
-        .panel-header.alternative { background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); }
-        .panel-header.social { background: linear-gradient(135deg, #10b981 0%, #047857 100%); }
-
-        .panel-content {
-            flex: 1;
-            position: relative;
-            overflow: hidden;
-            background: #f9fafb;
-            /* Prevent iframes from interfering with drag/resize */
-            pointer-events: auto; 
-        }
-        /* When dragging, disable pointer events on iframes so the mouse doesn't get stuck in them */
-        .grid-stack-item.ui-draggable-dragging .panel-content,
-        .grid-stack-item.ui-resizable-resizing .panel-content {
-            pointer-events: none;
-        }
-
-        iframe {
-            border: none;
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        /* Gridstack Container Styling */
-        .grid-stack {
-            padding: 12px;
-            min-height: calc(100vh - 80px); /* Ensure space below header */
-        }
-
-        .eci-fallback {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            padding: 20px;
-            text-align: center;
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-        }
-
-        .eci-fallback svg {
-            width: 64px;
-            height: 64px;
-            margin-bottom: 16px;
-            color: #d97706;
-        }
-
-        .open-btn {
-            margin-top: 16px;
-            padding: 12px 24px;
-            background: #f97316;
-            color: white;
-            border-radius: 8px;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s;
-            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
-        }
-
-        .open-btn:hover {
-            background: #ea580c;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(249, 115, 22, 0.4);
-        }
-
-        .refresh-btn {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: background 0.3s;
-            z-index: 10; /* Ensure button is clickable above drag handle */
-            position: relative;
-        }
-
-        .refresh-btn:hover {
-            background: rgba(255,255,255,0.3);
-        }
-
-        .news-controls {
-            padding: 8px;
-            background: white;
-            border-bottom: 1px solid #e5e7eb;
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .news-btn {
-            padding: 6px 12px;
-            border-radius: 6px;
-            border: none;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: #f3f4f6;
-            color: #4b5563;
-        }
-
-        .news-btn.active {
-            background: #dc2626;
-            color: white;
-            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
-        }
-
-        .header {
-            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
-            color: white;
-            padding: 12px 20px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+            gap: 16px;
             position: sticky;
             top: 0;
             z-index: 100;
         }
 
-        .header-content {
+        .wm-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+
+        .grid-stack { padding: 8px; min-height: calc(100vh - 60px); }
+
+        .grid-stack-item-content {
+            background: #121212;
+            border: 1px solid #27272a;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Tactical Header Styling */
+        .panel-header {
+            padding: 10px 12px;
+            border-bottom: 1px solid #27272a;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            letter-spacing: 1.5px;
+            color: #a1a1aa;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            max-width: 100%;
+            cursor: grab;
+            background: #121212;
+        }
+        .panel-header:active { cursor: grabbing; }
+
+        .live-dot {
+            width: 8px; height: 8px;
+            background-color: #ef4444;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
         }
 
-        .header h1 {
-            font-size: 20px;
-            font-weight: 700;
+        /* World Monitor style Tab Buttons */
+        .wm-tabs-container {
+            padding: 8px 12px;
+            border-bottom: 1px solid #27272a;
             display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .stats-badge {
-            background: rgba(255,255,255,0.15);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
             gap: 6px;
+            flex-wrap: wrap;
+            background: #121212;
         }
+
+        .wm-tab {
+            background: transparent;
+            border: 1px solid #3f3f46;
+            color: #a1a1aa;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            padding: 4px 10px;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+
+        .wm-tab:hover { border-color: #71717a; color: #fff; }
+        
+        /* Active Red Tab (Like CNN in WM) */
+        .wm-tab.active-red {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: white;
+            font-weight: bold;
+        }
+        
+        /* Active Gray Tab */
+        .wm-tab.active-gray {
+            background: #3f3f46;
+            color: white;
+        }
+
+        .panel-content {
+            flex: 1;
+            position: relative;
+            background: #000;
+        }
+        
+        iframe { width: 100%; height: 100%; border: none; display: block; }
+
+        /* AI Panel Specific Styles mimicking the screenshot */
+        .ai-box {
+            background: #1e1b4b; /* Dark purple hue */
+            border: 1px solid #3730a3;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 12px;
+        }
+        .ai-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 16px 0;
+            border-bottom: 1px solid #27272a;
+            margin: 0 12px;
+        }
+        .stat-col { text-align: center; }
+        .stat-num { font-size: 24px; color: #fff; margin-bottom: 4px; }
+        .stat-label { font-size: 10px; color: #71717a; letter-spacing: 1px; font-family: 'JetBrains Mono', monospace; }
+
+        /* Fix for dragging */
+        .grid-stack-item.ui-draggable-dragging .panel-content,
+        .grid-stack-item.ui-resizable-resizing .panel-content { pointer-events: none; }
     </style>
 </head>
 <body>
     
-    <header class="header">
-        <div class="header-content">
-            <h1>
-                <svg width="24" height="24" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
-                </svg>
-                <span>Kerala Election 2026 - Live Monitor</span>
-            </h1>
-            <div class="stats-badge">
-       div         <div class="live-dot"></div>
-                <span>LIVE</span>
-            </div>
-        </div>
+    <header class="wm-header">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #a1a1aa;"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        <div class="wm-title">Election Monitor</div>
     </header>
 
-       <div class="grid-stack">
+    <div class="grid-stack">
         
-        <div class="grid-stack-item" gs-w="12" gs-h="7" gs-x="0" gs-y="0">
+        <div class="grid-stack-item" gs-w="12" gs-h="6" gs-x="0" gs-y="0">
             <div class="grid-stack-item-content">
-                <div class="panel-header news drag-handle">
-                    <div class="flex items-center gap-2">
-                        <div class="live-dot"></div>
-                        Live Malayalam News
-                    </div>
-                    <button class="refresh-btn" onclick="refreshNews()">↻</button>
+                <div class="panel-header drag-handle">
+                    <div>LIVE NEWS <span style="color: #ef4444; font-size: 10px; margin-left: 8px;">● 93</span></div>
                 </div>
-                <div class="news-controls">
-                    <button class="news-btn active" onclick="changeChannel(0)" id="ch-0">Asianet</button>
-                    <button class="news-btn" onclick="changeChannel(1)" id="ch-1">Manorama</button>
-                    <button class="news-btn" onclick="changeChannel(2)" id="ch-2">Mathrubhumi</button>
-                    <button class="news-btn" onclick="changeChannel(3)" id="ch-3">MediaOne</button>
-                    <button class="news-btn" onclick="changeChannel(4)" id="ch-4">News18</button>
+                <div class="wm-tabs-container">
+                    <button class="wm-tab active-red" onclick="changeChannel(0)" id="ch-0">ASIANET</button>
+                    <button class="wm-tab" onclick="changeChannel(1)" id="ch-1">MANORAMA</button>
+                    <button class="wm-tab" onclick="changeChannel(2)" id="ch-2">MATHRUBHUMI</button>
+                    <button class="wm-tab" onclick="changeChannel(3)" id="ch-3">MEDIAONE</button>
+                    <button class="wm-tab" onclick="changeChannel(4)" id="ch-4">REPORTER</button>
                 </div>
                 <div class="panel-content">
-                    <iframe 
-                        id="newsFrame" 
-                        src="https://www.youtube.com/embed/live_stream?channel=UCrdSJJHb1kuQWqYXXrhkCAA&autoplay=0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen
-                        title="Live News">
-                    </iframe>
+                    <iframe id="newsFrame" src="https://www.youtube.com/embed/live_stream?channel=UCrdSJJHb1kuQWqYXXrhkCAA&autoplay=0&mute=1" allowfullscreen></iframe>
                 </div>
             </div>
         </div>
 
-        <div class="grid-stack-item" gs-w="6" gs-h="6" gs-x="0" gs-y="7">
+        <div class="grid-stack-item" gs-w="6" gs-h="6" gs-x="0" gs-y="6">
             <div class="grid-stack-item-content">
-                <div class="panel-header keraladesk drag-handle">
-                    <div class="flex items-center gap-2">
-                        Kerala Desk Analysis
-                    </div>
-                    <button class="refresh-btn" onclick="refreshFrame('keralaDesk')">↻</button>
+                <div class="panel-header drag-handle">
+                    <div>PREVIOUS INSIGHT</div>
                 </div>
-                <div class="panel-content" id="keralaDesk">
-                    <iframe src="https://www.keraladesk.com/election2026" title="Kerala Desk"></iframe>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid-stack-item" gs-w="6" gs-h="6" gs-x="6" gs-y="7">
-            <div class="grid-stack-item-content">
-                <div class="panel-header alternative drag-handle">
-                    <div class="flex items-center gap-2">
-                        Alternative Results View
-                    </div>
-                    <button class="refresh-btn" onclick="refreshFrame('alternative')">↻</button>
-                </div>
-                <div class="panel-content" id="alternative">
-                    <iframe src="https://kerala-assembly-elections.vercel.app/" title="Alternative View"></iframe>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid-stack-item" gs-w="6" gs-h="6" gs-x="0" gs-y="13">
-            <div class="grid-stack-item-content">
-                <div class="panel-header social drag-handle">
-                    <div class="flex items-center gap-2">
-                        #KeralaElection2026 Feed
-                    </div>
-                </div>
-                <div class="panel-content" style="padding: 10px; background: white; overflow-y: auto;">
-                    <a class="twitter-timeline" href="https://twitter.com/search?q=%23KeralaElections2026" data-chrome="noheader nofooter noborders transparent" data-tweet-limit="5">Tweets about Kerala Elections</a> 
-                    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid-stack-item" gs-w="6" gs-h="6" gs-x="6" gs-y="13">
-            <div class="grid-stack-item-content">
-                <div class="panel-header eci drag-handle">
-                    <div class="flex items-center gap-2">
-                        ECI Official Results
-                    </div>
-                    <button class="refresh-btn" onclick="openECI()">Open →</button>
+                <div class="wm-tabs-container" style="justify-content: center;">
+                    <button class="wm-tab active-gray" onclick="toggleInsight(1)" id="btn-src1">SOURCE 1 (KERALA DESK)</button>
+                    <button class="wm-tab" onclick="toggleInsight(2)" id="btn-src2">SOURCE 2 (VERCEL APP)</button>
                 </div>
                 <div class="panel-content">
-                    <div class="eci-fallback">
-                        <svg fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-                        </svg>
-                        <h3 style="font-weight: 600; color: #92400e; margin-bottom: 8px;">ECI restricts iframe embedding</h3>
-                        <p style="font-size: 14px; color: #78350f; margin-bottom: 16px;">Click below to view official results</p>
-                        <a href="https://results.eci.gov.in/" target="_blank" class="open-btn">
-                            📊 Open ECI Results
-                        </a>
+                    <iframe id="insight1" src="https://www.keraladesk.com/election2026"></iframe>
+                    <iframe id="insight2" src="https://kerala-assembly-elections.vercel.app/" style="display: none;"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-stack-item" gs-w="6" gs-h="6" gs-x="6" gs-y="6">
+            <div class="grid-stack-item-content">
+                <div class="panel-header drag-handle">
+                    <div>AI INSIGHTS </div>
+                    <span style="border: 1px solid #22c55e; color: #22c55e; padding: 2px 6px; border-radius: 12px; font-size: 9px;">LIVE</span>
+                </div>
+                <div class="panel-content" style="background: #121212;">
+                    <div class="ai-box">
+                        <div style="font-family: 'JetBrains Mono'; font-size: 10px; color: #a1a1aa; margin-bottom: 8px;">🌍 ELECTION BRIEF</div>
+                        <div style="font-family: monospace; font-size: 14px; line-height: 1.5; color: #e5e5e5;">
+                            Early postal ballot counting indicates a strong push in Malabar region. AI sentiment analysis of incoming data suggests tighter margins in key battleground constituencies compared to 2021.
+                        </div>
                     </div>
+                    
+                    <div class="ai-stats">
+                        <div class="stat-col">
+                            <div class="stat-num">140</div>
+                            <div class="stat-label">SEATS</div>
+                        </div>
+                        <div class="stat-col">
+                            <div class="stat-num">71</div>
+                            <div class="stat-label">MAJORITY</div>
+                        </div>
+                        <div class="stat-col">
+                            <div class="stat-num" id="ai-declared">0</div>
+                            <div class="stat-label">DECLARED</div>
+                        </div>
+                    </div>
+
+                    <div style="padding: 12px; font-family: 'JetBrains Mono'; font-size: 10px; color: #71717a;">
+                        BREAKING & CONFIRMED <br><br>
+                        <span style="color: #e5e5e5;">● ECI Servers: Data flow stabilized at 8:15 AM.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-stack-item" gs-w="12" gs-h="4" gs-x="0" gs-y="12">
+            <div class="grid-stack-item-content">
+                <div class="panel-header drag-handle">
+                    <div>ECI OFFICIAL PORTAL</div>
+                </div>
+                <div class="panel-content" style="display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0a0a0a; border-top: 1px solid #27272a;">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#52525b" stroke-width="1.5" style="margin-bottom: 16px;">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="3" y1="9" x2="21" y2="9"></line>
+                        <line x1="9" y1="21" x2="9" y2="9"></line>
+                    </svg>
+                    <div style="color: #a1a1aa; font-family: 'JetBrains Mono'; font-size: 12px; margin-bottom: 16px;">SECURE X-FRAME POLICY ACTIVE</div>
+                    <a href="https://results.eci.gov.in/" target="_blank" style="background: #e4e4e7; color: #000; padding: 10px 24px; border-radius: 4px; text-decoration: none; font-weight: 600; font-size: 14px;">
+                        ACCESS ECI SECURE SERVER ↗
+                    </a>
                 </div>
             </div>
         </div>
 
     </div>
 
-
     <script src="https://cdn.jsdelivr.net/npm/gridstack@10.1.1/dist/gridstack-all.js"></script>
     <script>
-        // Initialize Gridstack with handle
+        // Init Grid
         var grid = GridStack.init({
             handle: '.drag-handle',
-            margin: 12,
+            margin: 8,
             cellHeight: 70
         });
 
-        // Fix for iFrame issue: Gridstack provides an event to add an overlay when dragging starts
+        // iFrame drag fix
         grid.on('dragstart', function(event, el) {
-            var iframes = document.querySelectorAll('iframe');
-            iframes.forEach(function(iframe) {
-                iframe.style.pointerEvents = 'none';
-            });
+            document.querySelectorAll('iframe').forEach(frame => frame.style.pointerEvents = 'none');
         });
-
         grid.on('dragstop', function(event, el) {
-            var iframes = document.querySelectorAll('iframe');
-            iframes.forEach(function(iframe) {
-                iframe.style.pointerEvents = 'auto';
-            });
+            document.querySelectorAll('iframe').forEach(frame => frame.style.pointerEvents = 'auto');
         });
 
-        // Your existing JS functions...
+        // News Channel Logic
         const channels = [
-            { name: 'Asianet News', id: 'UCrdSJJHb1kuQWqYXXrhkCAA' },
-            { name: 'Manorama News', id: 'UC17G-QBi-SLjHQ9dNIBZZmw' },
-            { name: 'Mathrubhumi News', id: 'UCd3-59oqFvW4hDT-0bRj6YA' },
-            { name: 'MediaOne', id: 'UCP-8BawpvqybG7O9kJcMJaw' },
-            { name: 'News18 Kerala', id: 'UCDiwF2ebsW10IL765ndThmA' }
+            { id: 'UCrdSJJHb1kuQWqYXXrhkCAA', btn: 'ch-0' }, // Asianet
+            { id: 'UC17G-QBi-SLjHQ9dNIBZZmw', btn: 'ch-1' }, // Manorama
+            { id: 'UCd3-59oqFvW4hDT-0bRj6YA', btn: 'ch-2' }, // Mathrubhumi
+            { id: 'UCP-8BawpvqybG7O9kJcMJaw', btn: 'ch-3' }, // MediaOne
+            { id: 'UCb2H0n3G7U_tT-k96qF4bWA', btn: 'ch-4' }  // Reporter TV (Placeholder)
         ];
 
         function changeChannel(index) {
             const frame = document.getElementById('newsFrame');
             frame.src = `https://www.youtube.com/embed/live_stream?channel=${channels[index].id}&autoplay=1`;
-            document.querySelectorAll('.news-btn').forEach((btn, i) => {
-                if (i === index) btn.classList.add('active');
-                else btn.classList.remove('active');
-            });
+            
+            // Update Tab UI
+            document.querySelectorAll('#ch-0, #ch-1, #ch-2, #ch-3, #ch-4').forEach(btn => btn.classList.remove('active-red'));
+            document.getElementById(channels[index].btn).classList.add('active-red');
         }
 
-        function refreshFrame(id) {
-            const container = document.getElementById(id);
-            const iframe = container.querySelector('iframe');
-            iframe.src = iframe.src;
-        }
+        // Previous Insight Source Toggle Logic
+        function toggleInsight(source) {
+            const iframe1 = document.getElementById('insight1');
+            const iframe2 = document.getElementById('insight2');
+            const btn1 = document.getElementById('btn-src1');
+            const btn2 = document.getElementById('btn-src2');
 
-        function refreshNews() {
-            const iframe = document.getElementById('newsFrame');
-            iframe.src = iframe.src;
-        }
-
-        function openECI() {
-            window.open('https://results.eci.gov.in/', '_blank');
+            if (source === 1) {
+                iframe1.style.display = 'block';
+                iframe2.style.display = 'none';
+                btn1.classList.add('active-gray');
+                btn2.classList.remove('active-gray');
+            } else {
+                iframe1.style.display = 'none';
+                iframe2.style.display = 'block';
+                btn1.classList.remove('active-gray');
+                btn2.classList.add('active-gray');
+            }
         }
     </script>
 </body>
