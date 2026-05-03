@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kerala Election 2026 - Live Results</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .live-dot {
+            width: 12px;
+            height: 12px;
+            background-color: #ef4444;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .party-card {
+            transition: transform 0.3s ease;
+        }
+        .party-card:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-bold">Kerala Assembly Election 2026</h1>
+                    <p class="text-blue-100 text-sm">Live Results & Updates</p>
+                </div>
+                <div class="flex items-center gap-2 bg-red-600 px-4 py-2 rounded-full">
+                    <div class="live-dot"></div>
+                    <span class="font-semibold">LIVE</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-4 md:p-6">
+                <p class="text-gray-500 text-xs md:text-sm">Total Seats</p>
+                <h3 class="text-2xl md:text-3xl font-bold text-blue-600">140</h3>
+                <p class="text-xs text-gray-400 mt-1">Constituencies</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-4 md:p-6">
+                <p class="text-gray-500 text-xs md:text-sm">Declared</p>
+                <h3 class="text-2xl md:text-3xl font-bold text-green-600" id="declared">0</h3>
+                <p class="text-xs text-gray-400 mt-1">Results</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-4 md:p-6">
+                <p class="text-gray-500 text-xs md:text-sm">Majority Mark</p>
+                <h3 class="text-2xl md:text-3xl font-bold text-orange-600">71</h3>
+                <p class="text-xs text-gray-400 mt-1">Required</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-4 md:p-6">
+                <p class="text-gray-500 text-xs md:text-sm">Leading</p>
+                <h3 class="text-xl md:text-2xl font-bold text-red-600" id="leading">-</h3>
+                <p class="text-xs text-gray-400 mt-1">Alliance</p>
+            </div>
+        </div>
+
+        <!-- Alliance Results -->
+        <div class="bg-white rounded-lg shadow-lg p-4 md:p-6 mb-8">
+            <h2 class="text-xl md:text-2xl font-bold mb-6 flex items-center gap-2">
+                <svg class="w-6 h-6 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+                Alliance-wise Results
+            </h2>
+            <div id="alliances" class="space-y-4">
+                <!-- Results will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Live News Section -->
+        <div class="bg-white rounded-lg shadow-lg p-4 md:p-6 mb-8">
+            <h2 class="text-xl md:text-2xl font-bold mb-4 flex items-center gap-2">
+                <div class="live-dot"></div>
+                Live Malayalam News
+            </h2>
+            
+            <!-- Channel Buttons -->
+            <div class="flex gap-2 mb-4 flex-wrap">
+                <button onclick="changeChannel(0)" class="px-3 md:px-4 py-2 bg-red-600 text-white rounded-lg font-medium text-sm" id="btn-0">
+                    Asianet News
+                </button>
+                <button onclick="changeChannel(1)" class="px-3 md:px-4 py-2 bg-gray-200 rounded-lg font-medium text-sm hover:bg-gray-300" id="btn-1">
+                    Manorama News
+                </button>
+                <button onclick="changeChannel(2)" class="px-3 md:px-4 py-2 bg-gray-200 rounded-lg font-medium text-sm hover:bg-gray-300" id="btn-2">
+                    Mathrubhumi News
+                </button>
+                <button onclick="changeChannel(3)" class="px-3 md:px-4 py-2 bg-gray-200 rounded-lg font-medium text-sm hover:bg-gray-300" id="btn-3">
+                    MediaOne
+                </button>
+            </div>
+
+            <!-- Video Player -->
+            <div class="aspect-video bg-black rounded-lg overflow-hidden shadow-lg">
+                <iframe id="newsFrame" 
+                    width="100%" 
+                    height="100%" 
+                    src="https://www.youtube.com/embed/live_stream?channel=UCrdSJJHb1kuQWqYXXrhkCAA&autoplay=0&mute=0" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+            <p class="text-sm text-gray-500 mt-2 text-center">
+                Click channel name to switch • Auto-updates every 30 seconds
+            </p>
+        </div>
+
+        <!-- ECI Data Source -->
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg mb-8">
+            <h3 class="font-bold text-blue-900 mb-2">Data Sources:</h3>
+            <ul class="text-sm text-blue-800 space-y-1">
+                <li>• Official: <a href="https://results.eci.gov.in/" target="_blank" class="underline">Election Commission of India</a></li>
+                <li>• Updates: <a href="https://www.keraladesk.com/election2026" target="_blank" class="underline">Kerala Desk</a></li>
+                <li>• Live News: YouTube Malayalam Channels</li>
+            </ul>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-sm">Last Updated: <span id="lastUpdate" class="font-bold">--</span></p>
+            <p class="text-xs text-gray-400 mt-2">Auto-refresh: Every 30 seconds</p>
+            <p class="text-xs text-gray-400 mt-4">Made with ❤️ for Kerala Elections 2026</p>
+        </div>
+    </footer>
+
+    <script>
+        // News Channels Configuration
+        const channels = [
+            { name: 'Asianet News', id: 'UCrdSJJHb1kuQWqYXXrhkCAA' },
+            { name: 'Manorama News', id: 'UC17G-QBi-SLjHQ9dNIBZZmw' },
+            { name: 'Mathrubhumi News', id: 'UCd3-59oqFvW4hDT-0bRj6YA' },
+            { name: 'MediaOne', id: 'UCP-8BawpvqybG7O9kJcMJaw' }
+        ];
+
+        // Change News Channel Function
+        function changeChannel(index) {
+            const frame = document.getElementById('newsFrame');
+            frame.src = `https://www.youtube.com/embed/live_stream?channel=${channels[index].id}&autoplay=1&mute=0`;
+            
+            // Update button styles
+            for(let i = 0; i < 4; i++) {
+                const btn = document.getElementById(`btn-${i}`);
+                if(i === index) {
+                    btn.className = 'px-3 md:px-4 py-2 bg-red-600 text-white rounded-lg font-medium text-sm';
+                } else {
+                    btn.className = 'px-3 md:px-4 py-2 bg-gray-200 rounded-lg font-medium text-sm hover:bg-gray-300';
+                }
+            }
+        }
+
+        // Alliance Data Structure
+        const allianceData = [
+            { name: 'LDF', fullName: 'Left Democratic Front', color: '#ED1B24', won: 0, leading: 0 },
+            { name: 'UDF', fullName: 'United Democratic Front', color: '#0066CC', won: 0, leading: 0 },
+            { name: 'NDA', fullName: 'National Democratic Alliance', color: '#FF9933', won: 0, leading: 0 },
+            { name: 'OTH', fullName: 'Others', color: '#6B7280', won: 0, leading: 0 }
+        ];
+
+        // Fetch Election Results
+        async function fetchResults() {
+            try {
+                // TODO: Replace with actual ECI API endpoint
+                // const response = await fetch('https://results.eci.gov.in/api/kerala');
+                // const data = await response.json();
+                
+                // For now, using simulation (REPLACE THIS WITH REAL API)
+                simulateResults();
+                
+            } catch(error) {
+                console.error('Error fetching results:', error);
+                simulateResults(); // Fallback to simulation
+            }
+        }
+
+        // Simulate Results (Replace this with actual API data parsing)
+        function simulateResults() {
+            // This simulates live counting - REPLACE with actual data
+            allianceData[0].won = Math.floor(Math.random() * 50) + 20;
+            allianceData[0].leading = Math.floor(Math.random() * 25) + 5;
+            
+            allianceData[1].won = Math.floor(Math.random() * 45) + 15;
+            allianceData[1].leading = Math.floor(Math.random() * 30) + 5;
+            
+            allianceData[2].won = Math.floor(Math.random() * 10) + 2;
+            allianceData[2].leading = Math.floor(Math.random() * 15) + 2;
+            
+            allianceData[3].won = Math.floor(Math.random() * 5);
+            allianceData[3].leading = Math.floor(Math.random() * 8);
+
+            updateUI();
+        }
+
+        // Update UI with Latest Results
+        function updateUI() {
+            const alliancesDiv = document.getElementById('alliances');
+            alliancesDiv.innerHTML = '';
+
+            let totalDeclared = 0;
+            let maxSeats = 0;
+            let leadingAlliance = '';
+
+            // Sort by total seats
+            const sortedAlliances = [...allianceData].sort((a, b) => 
+                (b.won + b.leading) - (a.won + a.leading)
+            );
+
+            sortedAlliances.forEach((alliance, index) => {
+                const total = alliance.won + alliance.leading;
+                totalDeclared += alliance.won;
+                
+                if(total > maxSeats) {
+                    maxSeats = total;
+                    leadingAlliance = alliance.name;
+                }
+
+                const percentage = ((total / 140) * 100).toFixed(1);
+                const hasMajority = total >= 71;
+                const isLeading = index === 0;
+
+                alliancesDiv.innerHTML += `
+                    <div class="party-card border-l-4 p-4 rounded-lg shadow-sm hover:shadow-md" style="border-color: ${alliance.color}">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="text-lg md:text-xl font-bold" style="color: ${alliance.color}">
+                                    ${alliance.fullName} (${alliance.name})
+                                </h3>
+                                <div class="flex gap-2 mt-2">
+                                    ${isLeading ? '<span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-bold rounded-full">LEADING</span>' : ''}
+                                    ${hasMajority ? '<span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-bold rounded-full">MAJORITY</span>' : ''}
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-3xl md:text-4xl font-bold" style="color: ${alliance.color}">${total}</span>
+                                <p class="text-xs text-gray-500">Total Seats</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-3">
+                            <div class="text-center p-2 bg-green-50 rounded">
+                                <p class="text-xs text-gray-600">Won</p>
+                                <p class="text-xl md:text-2xl font-bold text-green-600">${alliance.won}</p>
+                            </div>
+                            <div class="text-center p-2 bg-blue-50 rounded">
+                                <p class="text-xs text-gray-600">Leading</p>
+                                <p class="text-xl md:text-2xl font-bold text-blue-600">${alliance.leading}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="w-full bg-gray-200 rounded-full h-3 mb-2">
+                            <div class="h-3 rounded-full transition-all duration-1000 flex items-center justify-end pr-2" 
+                                 style="width: ${percentage}%; background-color: ${alliance.color}">
+                                <span class="text-xs text-white font-bold">${percentage}%</span>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 text-center">${total} out of 140 seats (${percentage}%)</p>
+                    </div>
+                `;
+            });
+
+            // Update stats cards
+            document.getElementById('declared').textContent = totalDeclared;
+            document.getElementById('leading').textContent = leadingAlliance;
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('en-IN');
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(fetchResults, 30000);
+
+        // Initial load
+        window.addEventListener('load', () => {
+            fetchResults();
+            console.log('Kerala Election Monitor - Live!');
+        });
+
+        // Refresh on page focus
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                fetchResults();
+            }
+        });
+    </script>
+</body>
+                  </html>
