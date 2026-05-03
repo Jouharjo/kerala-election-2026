@@ -48,7 +48,7 @@
             overflow: hidden;
         }
 
-        /* Tactical Header Styling */
+        /* Standard Header (No longer draggable itself) */
         .panel-header {
             padding: 10px 12px;
             border-bottom: 1px solid #27272a;
@@ -59,10 +59,20 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            cursor: grab;
             background: #121212;
         }
-        .panel-header:active { cursor: grabbing; }
+
+        /* The New Dedicated Drag Grip */
+        .grip-handle {
+            cursor: grab;
+            padding: 4px 8px;
+            display: flex;
+            align-items: center;
+            color: #52525b;
+            transition: color 0.2s;
+        }
+        .grip-handle:hover { color: #a1a1aa; }
+        .grip-handle:active { cursor: grabbing; color: #fff; }
 
         .live-dot {
             width: 8px; height: 8px;
@@ -73,26 +83,20 @@
             box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
         }
 
-                /* World Monitor style Tab Buttons */
+        /* Scrollable Tab Row */
         .wm-tabs-container {
             padding: 8px 12px;
             border-bottom: 1px solid #27272a;
             display: flex;
             gap: 6px;
-            flex-wrap: nowrap;         /* Forces a single row */
-            overflow-x: auto;          /* Enables horizontal scrolling */
+            flex-wrap: nowrap;
+            overflow-x: auto;
             background: #121212;
-            -webkit-overflow-scrolling: touch; /* Smooth momentum scrolling on phones */
-            
-            /* Hides the scrollbar to keep the UI clean */
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;     /* Firefox */
+            -webkit-overflow-scrolling: touch;
+            -ms-overflow-style: none;  
+            scrollbar-width: none;     
         }
-        
-        /* Hides the scrollbar for Chrome, Safari and Opera */
-        .wm-tabs-container::-webkit-scrollbar {
-            display: none;
-        }
+        .wm-tabs-container::-webkit-scrollbar { display: none; }
 
         .wm-tab {
             background: transparent;
@@ -105,13 +109,11 @@
             cursor: pointer;
             transition: all 0.2s;
             text-transform: uppercase;
-            flex-shrink: 0;            /* Prevents buttons from squishing together */
-            white-space: nowrap;       /* Keeps the text on a single line */
+            flex-shrink: 0;
+            white-space: nowrap;
         }
-
         .wm-tab:hover { border-color: #71717a; color: #fff; }
         
-        /* Active Red Tab (Like CNN in WM) */
         .wm-tab.active-red {
             background: #ef4444;
             border-color: #ef4444;
@@ -119,12 +121,10 @@
             font-weight: bold;
         }
         
-        /* Active Gray Tab */
         .wm-tab.active-gray {
             background: #3f3f46;
             color: white;
         }
-
 
         .panel-content {
             flex: 1;
@@ -134,9 +134,8 @@
         
         iframe { width: 100%; height: 100%; border: none; display: block; }
 
-        /* AI Panel Specific Styles mimicking the screenshot */
         .ai-box {
-            background: #1e1b4b; /* Dark purple hue */
+            background: #1e1b4b;
             border: 1px solid #3730a3;
             border-radius: 6px;
             padding: 16px;
@@ -153,7 +152,6 @@
         .stat-num { font-size: 24px; color: #fff; margin-bottom: 4px; }
         .stat-label { font-size: 10px; color: #71717a; letter-spacing: 1px; font-family: 'JetBrains Mono', monospace; }
 
-        /* Fix for dragging */
         .grid-stack-item.ui-draggable-dragging .panel-content,
         .grid-stack-item.ui-resizable-resizing .panel-content { pointer-events: none; }
     </style>
@@ -165,12 +163,15 @@
         <div class="wm-title">Election Monitor</div>
     </header>
 
-            <div class="grid-stack">
+    <div class="grid-stack">
         
         <div class="grid-stack-item" gs-w="12" gs-h="5" gs-x="0" gs-y="0">
             <div class="grid-stack-item-content">
-                <div class="panel-header drag-handle">
+                <div class="panel-header">
                     <div>LIVE NEWS <span style="color: #ef4444; font-size: 10px; margin-left: 8px;">● 93</span></div>
+                    <div class="grip-handle">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                    </div>
                 </div>
                 <div class="wm-tabs-container">
                     <button class="wm-tab active-red" onclick="changeChannel(0)" id="ch-0">ASIANET</button>
@@ -187,8 +188,11 @@
 
         <div class="grid-stack-item" gs-w="12" gs-h="8" gs-x="0" gs-y="5">
             <div class="grid-stack-item-content">
-                <div class="panel-header drag-handle">
+                <div class="panel-header">
                     <div>PREVIOUS INSIGHT</div>
+                    <div class="grip-handle">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                    </div>
                 </div>
                 <div class="wm-tabs-container" style="justify-content: center;">
                     <button class="wm-tab active-gray" onclick="toggleInsight(1)" id="btn-src1">SOURCE 1 (KERALA DESK)</button>
@@ -203,9 +207,11 @@
 
         <div class="grid-stack-item" gs-w="12" gs-h="6" gs-x="0" gs-y="13">
             <div class="grid-stack-item-content">
-                <div class="panel-header drag-handle">
-                    <div>AI INSIGHTS </div>
-                    <span style="border: 1px solid #22c55e; color: #22c55e; padding: 2px 6px; border-radius: 12px; font-size: 9px;">LIVE</span>
+                <div class="panel-header">
+                    <div>AI INSIGHTS <span style="border: 1px solid #22c55e; color: #22c55e; padding: 2px 6px; border-radius: 12px; font-size: 9px; margin-left: 8px;">LIVE</span></div>
+                    <div class="grip-handle">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                    </div>
                 </div>
                 <div class="panel-content" style="background: #121212;">
                     <div class="ai-box">
@@ -240,8 +246,11 @@
 
         <div class="grid-stack-item" gs-w="12" gs-h="4" gs-x="0" gs-y="19">
             <div class="grid-stack-item-content">
-                <div class="panel-header drag-handle">
+                <div class="panel-header">
                     <div>ECI OFFICIAL PORTAL</div>
+                    <div class="grip-handle">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                    </div>
                 </div>
                 <div class="panel-content" style="display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0a0a0a; border-top: 1px solid #27272a;">
                     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#52525b" stroke-width="1.5" style="margin-bottom: 16px;">
@@ -259,13 +268,11 @@
 
     </div>
 
-
-
     <script src="https://cdn.jsdelivr.net/npm/gridstack@10.1.1/dist/gridstack-all.js"></script>
     <script>
-        // Init Grid
+        // Init Grid - Handled exclusively by the new grip icon
         var grid = GridStack.init({
-            handle: '.drag-handle',
+            handle: '.grip-handle',
             margin: 8,
             cellHeight: 70
         });
@@ -278,25 +285,22 @@
             document.querySelectorAll('iframe').forEach(frame => frame.style.pointerEvents = 'auto');
         });
 
-        // News Channel Logic
         const channels = [
-            { id: 'UCrdSJJHb1kuQWqYXXrhkCAA', btn: 'ch-0' }, // Asianet
-            { id: 'UC17G-QBi-SLjHQ9dNIBZZmw', btn: 'ch-1' }, // Manorama
-            { id: 'UCd3-59oqFvW4hDT-0bRj6YA', btn: 'ch-2' }, // Mathrubhumi
-            { id: 'UCP-8BawpvqybG7O9kJcMJaw', btn: 'ch-3' }, // MediaOne
-            { id: 'UCb2H0n3G7U_tT-k96qF4bWA', btn: 'ch-4' }  // Reporter TV (Placeholder)
+            { id: 'UCrdSJJHb1kuQWqYXXrhkCAA', btn: 'ch-0' }, 
+            { id: 'UC17G-QBi-SLjHQ9dNIBZZmw', btn: 'ch-1' }, 
+            { id: 'UCd3-59oqFvW4hDT-0bRj6YA', btn: 'ch-2' }, 
+            { id: 'UCP-8BawpvqybG7O9kJcMJaw', btn: 'ch-3' }, 
+            { id: 'UCb2H0n3G7U_tT-k96qF4bWA', btn: 'ch-4' }  
         ];
 
         function changeChannel(index) {
             const frame = document.getElementById('newsFrame');
             frame.src = `https://www.youtube.com/embed/live_stream?channel=${channels[index].id}&autoplay=1`;
             
-            // Update Tab UI
             document.querySelectorAll('#ch-0, #ch-1, #ch-2, #ch-3, #ch-4').forEach(btn => btn.classList.remove('active-red'));
             document.getElementById(channels[index].btn).classList.add('active-red');
         }
 
-        // Previous Insight Source Toggle Logic
         function toggleInsight(source) {
             const iframe1 = document.getElementById('insight1');
             const iframe2 = document.getElementById('insight2');
