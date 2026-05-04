@@ -50,12 +50,12 @@
             min-height: 250px;
             display: flex;
             flex-direction: column;
-            transition: height 0.3s ease; /* Smooth animation when expanding */
+            transition: height 0.3s ease; 
         }
 
-        /* * NEW: Class to double the panel height when 2 videos are playing * */
+        /* Increased slightly to fit the second row of tabs */
         .sticky-video-panel.dual-mode {
-            height: 70vh; 
+            height: 75vh; 
         }
 
         #custom-scroll-track {
@@ -157,7 +157,8 @@
             background: #121212;
             -webkit-overflow-scrolling: touch;
             -ms-overflow-style: none;  
-            scrollbar-width: none;     
+            scrollbar-width: none;
+            flex-shrink: 0; /* Prevents the tabs from squishing when flexbox gets tight */
         }
         .wm-tabs-container::-webkit-scrollbar { display: none; }
 
@@ -187,7 +188,6 @@
         
         .video-container {
             display: flex;
-            /* Changed to stack vertically instead of side-by-side */
             flex-direction: column; 
             width: 100%;
             height: 100%;
@@ -229,10 +229,11 @@
             
             <button onclick="toggleSplitScreen()" id="split-btn" class="ctrl-btn">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg> 
-                ADD DUAL
+                ADD EXTRA SCREEN
             </button>
         </div>
-        <div class="wm-tabs-container">
+        
+        <div class="wm-tabs-container" id="primary-tabs">
             <button class="wm-tab active-red" onclick="changeChannel(0)" id="ch-0">24 NEWS</button>
             <button class="wm-tab" onclick="changeChannel(1)" id="ch-1">REPORTER</button>
             <button class="wm-tab" onclick="changeChannel(2)" id="ch-2">MEDIAONE</button>
@@ -245,7 +246,20 @@
         
         <div class="panel-content video-container">
             <iframe id="newsFrame" src="https://www.youtube.com/embed/1wECsnGZcfc?autoplay=1&mute=0" allowfullscreen></iframe>
-            <iframe id="newsFrame2" src="" style="display: none; border-top: 2px solid #ef4444;" allowfullscreen></iframe>
+            
+            <div class="wm-tabs-container" id="secondary-tabs" style="display: none; border-top: 2px solid #ef4444; background: #0a0a0a;">
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #ef4444; padding: 4px 8px 4px 0; align-self: center; font-weight: bold;">SCREEN 2:</div>
+                <button class="wm-tab" onclick="changeSecondaryChannel(0)" id="sub-ch-0">24 NEWS</button>
+                <button class="wm-tab" onclick="changeSecondaryChannel(1)" id="sub-ch-1">REPORTER</button>
+                <button class="wm-tab" onclick="changeSecondaryChannel(2)" id="sub-ch-2">MEDIAONE</button>
+                <button class="wm-tab" onclick="changeSecondaryChannel(3)" id="sub-ch-3">MANORAMA</button>
+                <button class="wm-tab" onclick="changeSecondaryChannel(4)" id="sub-ch-4">ASIANET</button>
+                <button class="wm-tab" onclick="changeSecondaryChannel(5)" id="sub-ch-5">BIG TV</button>
+                <button class="wm-tab" onclick="changeSecondaryChannel(6)" id="sub-ch-6">NDTV</button>
+                <button class="wm-tab" onclick="changeSecondaryChannel(7)" id="sub-ch-7">INDIA TODAY</button>
+            </div>
+            
+            <iframe id="newsFrame2" src="" style="display: none;" allowfullscreen></iframe>
         </div>
     </div>
 
@@ -309,34 +323,47 @@
             { id: 'b9NNj4SQqsM', btn: 'ch-7' }
         ];
 
+        // Controls FIRST Screen
         function changeChannel(index) {
             const frame = document.getElementById('newsFrame');
             frame.src = `https://www.youtube.com/embed/${channels[index].id}?autoplay=1&mute=0`;
             
-            document.querySelectorAll('.wm-tab').forEach(btn => btn.classList.remove('active-red'));
-            document.getElementById(channels[index].btn).classList.add('active-red');
+            document.querySelectorAll('#primary-tabs .wm-tab').forEach(btn => btn.classList.remove('active-red'));
+            document.getElementById(`ch-${index}`).classList.add('active-red');
+        }
+
+        // Controls SECOND Screen
+        function changeSecondaryChannel(index) {
+            const frame2 = document.getElementById('newsFrame2');
+            // Kept mute=1 so it doesn't fight with the audio of Screen 1
+            frame2.src = `https://www.youtube.com/embed/${channels[index].id}?autoplay=1&mute=1`;
+            
+            document.querySelectorAll('#secondary-tabs .wm-tab').forEach(btn => btn.classList.remove('active-red'));
+            document.getElementById(`sub-ch-${index}`).classList.add('active-red');
         }
 
         let isSplit = false;
         function toggleSplitScreen() {
             isSplit = !isSplit;
             const frame2 = document.getElementById('newsFrame2');
+            const secondaryTabs = document.getElementById('secondary-tabs');
             const btn = document.getElementById('split-btn');
             const panel = document.getElementById('sticky-panel');
             
             if (isSplit) {
                 frame2.style.display = 'block';
-                frame2.src = `https://www.youtube.com/embed/${channels[7].id}?autoplay=1&mute=1`;
+                secondaryTabs.style.display = 'flex'; // Shows the second row of buttons
+                changeSecondaryChannel(7); // Automatically loads India Today to start
+                
                 btn.classList.add('active-split');
-                btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> CLOSE`;
-                // Expands the height of the sticky panel so the videos don't shrink
+                btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> CLOSE EXTRA`;
                 panel.classList.add('dual-mode');
             } else {
                 frame2.style.display = 'none';
+                secondaryTabs.style.display = 'none';
                 frame2.src = ''; 
                 btn.classList.remove('active-split');
-                btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg> ADD DUAL`;
-                // Shrinks the panel back to normal
+                btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg> ADD EXTRA SCREEN`;
                 panel.classList.remove('dual-mode');
             }
         }
