@@ -50,6 +50,12 @@
             min-height: 250px;
             display: flex;
             flex-direction: column;
+            transition: height 0.3s ease; /* Smooth animation when expanding */
+        }
+
+        /* * NEW: Class to double the panel height when 2 videos are playing * */
+        .sticky-video-panel.dual-mode {
+            height: 70vh; 
         }
 
         #custom-scroll-track {
@@ -111,6 +117,25 @@
             background: #121212;
         }
 
+        .ctrl-btn {
+            background: transparent;
+            border: 1px solid #3f3f46;
+            color: #a1a1aa;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .ctrl-btn:hover { background: #27272a; color: #fff; }
+        .ctrl-btn.active-split { background: #ef4444; border-color: #ef4444; color: white; font-weight: bold; }
+
         .grip-handle {
             cursor: grab;
             padding: 4px 8px;
@@ -160,7 +185,16 @@
             background: #000;
         }
         
+        .video-container {
+            display: flex;
+            /* Changed to stack vertically instead of side-by-side */
+            flex-direction: column; 
+            width: 100%;
+            height: 100%;
+        }
+
         iframe { 
+            flex: 1; 
             width: 100%; 
             height: 100%; 
             border: none; 
@@ -189,9 +223,14 @@
         </div>
     </div>
 
-    <div class="sticky-video-panel">
+    <div id="sticky-panel" class="sticky-video-panel">
         <div class="panel-header" style="cursor: default;">
             <div>LIVE NEWS <span style="color: #ef4444; font-size: 10px; margin-left: 8px;">● <span id="live-user-count">93</span></span></div>
+            
+            <button onclick="toggleSplitScreen()" id="split-btn" class="ctrl-btn">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg> 
+                ADD DUAL
+            </button>
         </div>
         <div class="wm-tabs-container">
             <button class="wm-tab active-red" onclick="changeChannel(0)" id="ch-0">24 NEWS</button>
@@ -203,8 +242,10 @@
             <button class="wm-tab" onclick="changeChannel(6)" id="ch-6">NDTV</button>
             <button class="wm-tab" onclick="changeChannel(7)" id="ch-7">INDIA TODAY</button>
         </div>
-        <div class="panel-content">
+        
+        <div class="panel-content video-container">
             <iframe id="newsFrame" src="https://www.youtube.com/embed/1wECsnGZcfc?autoplay=1&mute=0" allowfullscreen></iframe>
+            <iframe id="newsFrame2" src="" style="display: none; border-top: 2px solid #ef4444;" allowfullscreen></iframe>
         </div>
     </div>
 
@@ -264,7 +305,6 @@
             { id: '3miKzKlmA-4', btn: 'ch-3' }, 
             { id: 's0LLVQeMmtU', btn: 'ch-4' },
             { id: 'AT0fo8Ty4jo', btn: 'ch-5' },
-            // FIXED JS ARRAY IDs HERE
             { id: 'piFbSNT8rJk', btn: 'ch-6' },
             { id: 'b9NNj4SQqsM', btn: 'ch-7' }
         ];
@@ -273,29 +313,43 @@
             const frame = document.getElementById('newsFrame');
             frame.src = `https://www.youtube.com/embed/${channels[index].id}?autoplay=1&mute=0`;
             
-            // CLEANED UP: This now removes the red class from ALL tabs automatically
             document.querySelectorAll('.wm-tab').forEach(btn => btn.classList.remove('active-red'));
             document.getElementById(channels[index].btn).classList.add('active-red');
         }
 
-        // --- SIMULATED LIVE USER COUNTER ---
-        // Fluctuates the number slightly to look active
+        let isSplit = false;
+        function toggleSplitScreen() {
+            isSplit = !isSplit;
+            const frame2 = document.getElementById('newsFrame2');
+            const btn = document.getElementById('split-btn');
+            const panel = document.getElementById('sticky-panel');
+            
+            if (isSplit) {
+                frame2.style.display = 'block';
+                frame2.src = `https://www.youtube.com/embed/${channels[7].id}?autoplay=1&mute=1`;
+                btn.classList.add('active-split');
+                btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> CLOSE`;
+                // Expands the height of the sticky panel so the videos don't shrink
+                panel.classList.add('dual-mode');
+            } else {
+                frame2.style.display = 'none';
+                frame2.src = ''; 
+                btn.classList.remove('active-split');
+                btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg> ADD DUAL`;
+                // Shrinks the panel back to normal
+                panel.classList.remove('dual-mode');
+            }
+        }
+
         function simulateLiveUsers() {
             const countElement = document.getElementById('live-user-count');
             let currentNum = parseInt(countElement.innerText);
-            
-            // Randomly add or subtract between -2 and +3
             let fluctuation = Math.floor(Math.random() * 6) - 2;
             currentNum += fluctuation;
-            
-            // Keep the number looking realistic (never drop below 80)
             if (currentNum < 80) currentNum = 85;
-            
             countElement.innerText = currentNum;
         }
-        // Update the number every 3.5 seconds
         setInterval(simulateLiveUsers, 3500);
-        // ------------------------------------
 
         function toggleInsight(source) {
             const iframe1 = document.getElementById('insight1');
@@ -382,3 +436,4 @@
     </script>
 </body>
 </html>
+
