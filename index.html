@@ -170,14 +170,15 @@
             <div>LIVE NEWS <span style="color: #ef4444; font-size: 10px; margin-left: 8px;">● 93</span></div>
         </div>
         <div class="wm-tabs-container">
-            <button class="wm-tab active-red" onclick="changeChannel(0)" id="ch-0">ASIANET</button>
-            <button class="wm-tab" onclick="changeChannel(1)" id="ch-1">MANORAMA</button>
-            <button class="wm-tab" onclick="changeChannel(2)" id="ch-2">MATHRUBHUMI</button>
-            <button class="wm-tab" onclick="changeChannel(3)" id="ch-3">MEDIAONE</button>
-            <button class="wm-tab" onclick="changeChannel(4)" id="ch-4">REPORTER</button>
+            <button class="wm-tab active-red" onclick="changeChannel(0)" id="ch-0">24 NEWS</button>
+            <button class="wm-tab" onclick="changeChannel(1)" id="ch-1">REPORTER</button>
+            <button class="wm-tab" onclick="changeChannel(2)" id="ch-2">MEDIAONE</button>
+            <button class="wm-tab" onclick="changeChannel(3)" id="ch-3">ANIANET</button>
+            <button class="wm-tab" onclick="changeChannel(4)" id="ch-4">MANORAMA</button>
+            <button class="wm-tab" onclick="changeChannel(4)" id="ch-5">BIG TV</button>
         </div>
         <div class="panel-content">
-            <iframe id="newsFrame" src="https://www.youtube.com/embed/1wECsnGZcfc?autoplay=1&mute=1" allowfullscreen></iframe>
+            <iframe id="newsFrame" src="https://www.youtube.com/embed/1wECsnGZcfc?autoplay=1" allowfullscreen></iframe>
         </div>
     </div>
 
@@ -278,11 +279,12 @@
         grid.on('dragstop', function(event, el) { document.querySelectorAll('.grid-stack-item iframe').forEach(frame => frame.style.pointerEvents = 'auto'); });
 
         const channels = [
-            { id: '1wECsnGZcfc', btn: 'ch-0' }, // Asianet
-            { id: 'VIDEO_ID_2', btn: 'ch-1' }, 
-            { id: 'VIDEO_ID_3', btn: 'ch-2' }, 
-            { id: 'VIDEO_ID_4', btn: 'ch-3' }, 
-            { id: 'VIDEO_ID_5', btn: 'ch-4' }  
+            { id: '1wECsnGZcfc', btn: 'ch-0' },
+            { id: 'nObUcHKZEGY', btn: 'ch-1' }, 
+            { id: '-8d8-c0yvyU', btn: 'ch-2' }, 
+            { id: 's0LLVQeMmtU', btn: 'ch-3' }, 
+            { id: '3miKzKlmA-4', btn: 'ch-4' },
+            { id: 'AT0fo8Ty4jo', btn: 'ch-5' }  
         ];
 
         function changeChannel(index) {
