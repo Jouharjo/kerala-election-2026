@@ -178,7 +178,7 @@
             <button class="wm-tab" onclick="changeChannel(5)" id="ch-5">BIG TV</button>
         </div>
         <div class="panel-content">
-            <iframe id="newsFrame" src="https://www.youtube.com/embed/1wECsnGZcfc?autoplay=1" allowfullscreen></iframe>
+            <iframe id="newsFrame" src="https://www.youtube.com/embed/1wECsnGZcfc?autoplay=1&mute=0" allowfullscreen></iframe>
         </div>
     </div>
 
@@ -287,13 +287,14 @@
             { id: 'AT0fo8Ty4jo', btn: 'ch-5' }  
         ];
 
-        function changeChannel(index) {
+                function changeChannel(index) {
             const frame = document.getElementById('newsFrame');
-            frame.src = `https://www.youtube.com/embed/${channels[index].id}?autoplay=1&mute=1`;
+            frame.src = `https://www.youtube.com/embed/${channels[index].id}?autoplay=1&mute=0`;
             
             document.querySelectorAll('#ch-0, #ch-1, #ch-2, #ch-3, #ch-4').forEach(btn => btn.classList.remove('active-red'));
             document.getElementById(channels[index].btn).classList.add('active-red');
         }
+
 
         function toggleInsight(source) {
             const iframe1 = document.getElementById('insight1');
