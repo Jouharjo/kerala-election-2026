@@ -38,15 +38,15 @@
             color: #fff;
         }
 
-        /* The new Sticky Video Panel */
+        /* The Sticky Video Panel */
         .sticky-video-panel {
             position: sticky;
-            top: 50px; /* Glues it exactly underneath the 50px header */
+            top: 50px; 
             z-index: 90;
             background: #121212;
-            border-bottom: 2px solid #ef4444; /* Red border to separate from scrolled content */
+            border-bottom: 2px solid #ef4444; 
             box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-            height: 38vh; /* Takes up about 38% of the screen height */
+            height: 38vh; 
             min-height: 250px;
             display: flex;
             flex-direction: column;
@@ -136,24 +136,6 @@
         
         iframe { width: 100%; height: 100%; border: none; display: block; }
 
-        .ai-box {
-            background: #1e1b4b;
-            border: 1px solid #3730a3;
-            border-radius: 6px;
-            padding: 16px;
-            margin: 12px;
-        }
-        .ai-stats {
-            display: flex;
-            justify-content: space-around;
-            padding: 16px 0;
-            border-bottom: 1px solid #27272a;
-            margin: 0 12px;
-        }
-        .stat-col { text-align: center; }
-        .stat-num { font-size: 24px; color: #fff; margin-bottom: 4px; }
-        .stat-label { font-size: 10px; color: #71717a; letter-spacing: 1px; font-family: 'JetBrains Mono', monospace; }
-
         .grid-stack-item.ui-draggable-dragging .panel-content,
         .grid-stack-item.ui-resizable-resizing .panel-content { pointer-events: none; }
     </style>
@@ -174,7 +156,7 @@
             <button class="wm-tab" onclick="changeChannel(1)" id="ch-1">REPORTER</button>
             <button class="wm-tab" onclick="changeChannel(2)" id="ch-2">MEDIAONE</button>
             <button class="wm-tab" onclick="changeChannel(3)" id="ch-3">MANORAMA</button>
-            <button class="wm-tab" onclick="changeChannel(4)" id="ch-4">ANIANET</button>
+            <button class="wm-tab" onclick="changeChannel(4)" id="ch-4">ASIANET</button>
             <button class="wm-tab" onclick="changeChannel(5)" id="ch-5">BIG TV</button>
         </div>
         <div class="panel-content">
@@ -187,7 +169,7 @@
         <div class="grid-stack-item" gs-w="12" gs-h="8" gs-x="0" gs-y="0">
             <div class="grid-stack-item-content">
                 <div class="panel-header">
-                    <div>PREVIOUS INSIGHT</div>
+                    <div>REGIONAL DASHBOARD</div>
                     <div class="grip-handle">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
                     </div>
@@ -203,46 +185,21 @@
             </div>
         </div>
 
-        <div class="grid-stack-item" gs-w="12" gs-h="6" gs-x="0" gs-y="8">
+        <div class="grid-stack-item" gs-w="12" gs-h="8" gs-x="0" gs-y="8">
             <div class="grid-stack-item-content">
                 <div class="panel-header">
-                    <div>AI INSIGHTS <span style="border: 1px solid #22c55e; color: #22c55e; padding: 2px 6px; border-radius: 12px; font-size: 9px; margin-left: 8px;">LIVE</span></div>
+                    <div>NATIONAL OVERVIEW (NDTV)</div>
                     <div class="grip-handle">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
                     </div>
                 </div>
-                <div class="panel-content" style="background: #121212;">
-                    <div class="ai-box">
-                        <div style="font-family: 'JetBrains Mono'; font-size: 10px; color: #a1a1aa; margin-bottom: 8px;">🌍 ELECTION BRIEF</div>
-                        <div style="font-family: monospace; font-size: 14px; line-height: 1.5; color: #e5e5e5;">
-                            Early postal ballot counting indicates a strong push in Malabar region. AI sentiment analysis of incoming data suggests tighter margins in key battleground constituencies compared to 2021.
-                        </div>
-                    </div>
-                    
-                    <div class="ai-stats">
-                        <div class="stat-col">
-                            <div class="stat-num">140</div>
-                            <div class="stat-label">SEATS</div>
-                        </div>
-                        <div class="stat-col">
-                            <div class="stat-num">71</div>
-                            <div class="stat-label">MAJORITY</div>
-                        </div>
-                        <div class="stat-col">
-                            <div class="stat-num" id="ai-declared">0</div>
-                            <div class="stat-label">DECLARED</div>
-                        </div>
-                    </div>
-
-                    <div style="padding: 12px; font-family: 'JetBrains Mono'; font-size: 10px; color: #71717a;">
-                        BREAKING & CONFIRMED <br><br>
-                        <span style="color: #e5e5e5;">● ECI Servers: Data flow stabilized at 8:15 AM.</span>
-                    </div>
+                <div class="panel-content">
+                    <iframe src="https://www.ndtv.com/elections"></iframe>
                 </div>
             </div>
         </div>
 
-        <div class="grid-stack-item" gs-w="12" gs-h="4" gs-x="0" gs-y="14">
+        <div class="grid-stack-item" gs-w="12" gs-h="4" gs-x="0" gs-y="16">
             <div class="grid-stack-item-content">
                 <div class="panel-header">
                     <div>ECI OFFICIAL PORTAL</div>
@@ -287,11 +244,11 @@
             { id: 'AT0fo8Ty4jo', btn: 'ch-5' }  
         ];
 
-                function changeChannel(index) {
+        function changeChannel(index) {
             const frame = document.getElementById('newsFrame');
             frame.src = `https://www.youtube.com/embed/${channels[index].id}?autoplay=1&mute=0`;
             
-            document.querySelectorAll('#ch-0, #ch-1, #ch-2, #ch-3, #ch-4').forEach(btn => btn.classList.remove('active-red'));
+            document.querySelectorAll('#ch-0, #ch-1, #ch-2, #ch-3, #ch-4, #ch-5').forEach(btn => btn.classList.remove('active-red'));
             document.getElementById(channels[index].btn).classList.add('active-red');
         }
 
