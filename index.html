@@ -52,7 +52,6 @@
             flex-direction: column;
         }
 
-        /* * NEW CUSTOM SCROLL KNOB STYLES (No Red Box, Just ↕️) * */
         #custom-scroll-track {
             position: fixed;
             top: 55px; 
@@ -69,23 +68,22 @@
             right: 0;
             width: 100%;
             height: 50px; 
-            background: transparent; /* Removed the red background */
-            border: none; /* Removed the border */
+            background: transparent; 
+            border: none; 
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #71717a; /* Sleek dark gray when not touched */
+            color: #71717a; 
             pointer-events: auto; 
             touch-action: none; 
             cursor: grab;
             transition: transform 0.1s, color 0.2s;
-            /* Added a dark shadow so you can see it even if the map underneath is white */
             filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.8));
         }
 
         #custom-scroll-thumb:active, #custom-scroll-thumb.active-drag {
-            color: #fff; /* Turns bright white when you touch it */
-            transform: scale(1.3); /* Slightly enlarges under your thumb */
+            color: #fff; 
+            transform: scale(1.3); 
             cursor: grabbing;
         }
 
@@ -193,7 +191,7 @@
 
     <div class="sticky-video-panel">
         <div class="panel-header" style="cursor: default;">
-            <div>LIVE NEWS <span style="color: #ef4444; font-size: 10px; margin-left: 8px;">● 93</span></div>
+            <div>LIVE NEWS <span style="color: #ef4444; font-size: 10px; margin-left: 8px;">● <span id="live-user-count">93</span></span></div>
         </div>
         <div class="wm-tabs-container">
             <button class="wm-tab active-red" onclick="changeChannel(0)" id="ch-0">24 NEWS</button>
@@ -202,8 +200,8 @@
             <button class="wm-tab" onclick="changeChannel(3)" id="ch-3">MANORAMA</button>
             <button class="wm-tab" onclick="changeChannel(4)" id="ch-4">ASIANET</button>
             <button class="wm-tab" onclick="changeChannel(5)" id="ch-5">BIG TV</button>
-            <button class="wm-tab" onclick="changeChannel(6)" id="ch-5">NDTV</button>
-            <button class="wm-tab" onclick="changeChannel(7)" id="ch-5">INDIA TODAY</button>
+            <button class="wm-tab" onclick="changeChannel(6)" id="ch-6">NDTV</button>
+            <button class="wm-tab" onclick="changeChannel(7)" id="ch-7">INDIA TODAY</button>
         </div>
         <div class="panel-content">
             <iframe id="newsFrame" src="https://www.youtube.com/embed/1wECsnGZcfc?autoplay=1&mute=0" allowfullscreen></iframe>
@@ -266,17 +264,38 @@
             { id: '3miKzKlmA-4', btn: 'ch-3' }, 
             { id: 's0LLVQeMmtU', btn: 'ch-4' },
             { id: 'AT0fo8Ty4jo', btn: 'ch-5' },
-            { id: 'piFbSNT8rJk', btn: 'ch-5' },
-            { id: 'b9NNj4SQqsM', btn: 'ch-6' }
+            // FIXED JS ARRAY IDs HERE
+            { id: 'piFbSNT8rJk', btn: 'ch-6' },
+            { id: 'b9NNj4SQqsM', btn: 'ch-7' }
         ];
 
         function changeChannel(index) {
             const frame = document.getElementById('newsFrame');
             frame.src = `https://www.youtube.com/embed/${channels[index].id}?autoplay=1&mute=0`;
             
-            document.querySelectorAll('#ch-0, #ch-1, #ch-2, #ch-3, #ch-4, #ch-5').forEach(btn => btn.classList.remove('active-red'));
+            // CLEANED UP: This now removes the red class from ALL tabs automatically
+            document.querySelectorAll('.wm-tab').forEach(btn => btn.classList.remove('active-red'));
             document.getElementById(channels[index].btn).classList.add('active-red');
         }
+
+        // --- SIMULATED LIVE USER COUNTER ---
+        // Fluctuates the number slightly to look active
+        function simulateLiveUsers() {
+            const countElement = document.getElementById('live-user-count');
+            let currentNum = parseInt(countElement.innerText);
+            
+            // Randomly add or subtract between -2 and +3
+            let fluctuation = Math.floor(Math.random() * 6) - 2;
+            currentNum += fluctuation;
+            
+            // Keep the number looking realistic (never drop below 80)
+            if (currentNum < 80) currentNum = 85;
+            
+            countElement.innerText = currentNum;
+        }
+        // Update the number every 3.5 seconds
+        setInterval(simulateLiveUsers, 3500);
+        // ------------------------------------
 
         function toggleInsight(source) {
             const iframe1 = document.getElementById('insight1');
@@ -297,7 +316,6 @@
             }
         }
 
-        /* * SCROLL KNOB LOGIC FIX * */
         const track = document.getElementById('custom-scroll-track');
         const thumb = document.getElementById('custom-scroll-thumb');
         let isDragging = false;
@@ -351,7 +369,6 @@
             document.querySelectorAll('iframe').forEach(f => f.style.pointerEvents = 'auto');
         });
 
-        // FIXED: The icon now updates its position constantly, even while dragging!
         window.addEventListener('scroll', function() {
             const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
             if (maxScroll <= 0) return;
